@@ -44,10 +44,10 @@ Creates a new instance of the API. This does not connect to the light yet.
 **setColorWithBrightness**(red, green, blue, brightness, callback)  
 Convenience method to automatically scale down the rgb values to match the brightness parameter
 
-**setPattern**(pattern, speed, callback)
+**setPattern**(pattern, speed, callback)  
 Sets the light to play a built-in pattern. The `pattern` parameter is a string which indicates the pattern (complete list below). The speed parameter has to be between 0 and 100.
 
-**queryState**(callback)
+**queryState**(callback)  
 Gets the state of the light. Example state:
 
 	{
