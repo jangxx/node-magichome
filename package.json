@@ -1,0 +1,26 @@
+{
+  "name": "magic-home",
+  "version": "1.0.0",
+  "description": "An implementation of the \"Magic Home\" app functionality",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jangxx/node-magichome.git"
+  },
+  "keywords": [
+    "smart",
+    "home",
+    "magic",
+    "home",
+    "wifi"
+  ],
+  "author": "jangxx <jangxx.games@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jangxx/node-magichome/issues"
+  },
+  "homepage": "https://github.com/jangxx/node-magichome#readme"
+}
