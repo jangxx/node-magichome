@@ -1,13 +1,30 @@
 var MHControl = require('../').Control;
 
+const characteristics = Object.freeze({
+	type1: {
+		rgb_min_0: true,
+		ww_min_0: true,
+		set_color_magic_bytes: [0xf0, 0x0f],
+		wait_for_reply: true
+	},
+	type2: {
+		rgb_min_0: false,
+		ww_min_0: false,
+		set_color_magic_bytes: [0x00, 0x0f],
+		wait_for_reply: false
+	},
+});
+
 var ip = process.argv[2];
+var type = (process.argv.length >= 4) ? process.argv[3] : "type1";
+var chars = (characteristics[type] != undefined) ? characteristics[type] : characteristics["type1"];
 
 if(ip == undefined) {
-	console.log("Usage: node effect_test.js <ip>");
+	console.log("Usage: node effect_test.js <ip> [type]");
 	process.exit();
 }
 
-var c = new MHControl(ip);
+var c = new MHControl(ip, chars);
 
 var on = false;
 var need_delay = false;

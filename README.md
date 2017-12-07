@@ -32,8 +32,9 @@ More examples are in the test directory.
 
 ## Control
 
-**constructor**(address)  
-Creates a new instance of the API. This does not connect to the light yet.
+**constructor**(address, characteristics)  
+Creates a new instance of the API. This does not connect to the light yet.  
+The parameter `characteristics` gives the API some important hints about the behavior of the connected LED controller, like if they acknowledge commands or the format of the data to change the colors. Two sets of characteristics are defined in `test/cli.js`, but unfortunately these parameters have to be found out through trial and error. If the parameter is left undefined, the assumptions found in https://github.com/beville/flux_led are used.
 
 **turnOn**(callback)
 
@@ -52,7 +53,7 @@ Gets the state of the light. Example state:
 
 	{
 	    "on": true,
-	    "mode": "color", //color, warm_white, custom, special, or one of the build in patterns
+	    "mode": "color", //color, warm_white, custom, special, or one of the built-in patterns
 	    "speed": 50, //playback speed of the current pattern
 	    "color": {
 	        "red": 255,

@@ -1,6 +1,6 @@
 {
   "name": "magic-home",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "An implementation of the \"Magic Home\" app functionality",
   "main": "index.js",
   "scripts": {
@@ -14,8 +14,8 @@
     "smart",
     "home",
     "magic",
-    "home",
-    "wifi"
+    "wifi",
+    "led"
   ],
   "author": "jangxx <jangxx.games@gmail.com>",
   "license": "ISC",

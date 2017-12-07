@@ -23,25 +23,44 @@ const patterns = Object.freeze({
 	seven_color_jumping: 0x38
 });
 
+const characteristics = Object.freeze({
+	type1: {
+		rgb_min_0: true,
+		ww_min_0: true,
+		set_color_magic_bytes: [0xf0, 0x0f],
+		wait_for_reply: true
+	},
+	type2: {
+		rgb_min_0: false,
+		ww_min_0: false,
+		set_color_magic_bytes: [0x00, 0x0f],
+		wait_for_reply: false
+	},
+});
+
 var commands = {
 	"help": {
 		desc: "Prints this message",
 		fn: help
 	},
+	"list_types": {
+		desc: "Lists the different characteristic types",
+		fn: list_types
+	},
 	"turnon": {
 		desc: "Turns a light on",
 		fn: turnon,
-		args: ["ip"]
+		args: ["ip", "type"]
 	},
 	"turnoff": {
 		desc: "Turns a light off",
 		fn: turnoff,
-		args: ["ip"]
+		args: ["ip", "type"]
 	},
 	"setcolor": {
 		desc: "Sets the color of a light",
 		fn: setcolor,
-		args: ["ip", "red", "green", "blue"]
+		args: ["ip", "red", "green", "blue", "type"]
 	},
 	"setpattern": {
 		desc: "Makes the light display a pattern. The speed parameter has to be in the range 0 - 100",
@@ -89,6 +108,27 @@ command.fn.apply(this, args);
  * Command functions
  */
 
+function list_types() {
+	console.log("Available types:")
+	console.log();
+
+	for(let type in characteristics) {
+		console.log(type + ":");
+		console.log("----------------------");
+
+		var c = characteristics[type];
+
+		console.log("RGB minimum value is 0:", c.rgb_min_0);
+		console.log("Warm White minimum value is 0:", c.ww_min_0);
+		console.log("Last two magic bytes in color command:", c.set_color_magic_bytes.reduce((aggr, val) => {
+			return aggr + ("00" + val.toString(16)).substr(-2);
+		}, ""));
+		console.log("Wait for reply from controller:", c.wait_for_reply);
+
+		console.log();
+	}
+}
+
 function list_patterns() {
 	console.log("Available patterns:")
 	console.log();
@@ -114,8 +154,11 @@ function query(formatted) {
 	};
 }
 
-function setpattern(ip, pattern, speed) {
-	var c = new MHControl(ip);
+function setpattern(ip, pattern, speed, type) {
+	if(type == undefined) type = "type1";
+	var chars = characteristics[type];
+
+	var c = new MHControl(ip, chars);
 
 	c.setPattern(pattern, speed, function(err, success) {
 		if(err) return console.log("Error:", err.message);
@@ -123,8 +166,11 @@ function setpattern(ip, pattern, speed) {
 	});
 }
 
-function setcolor(ip, r, g, b) {
-	var c = new MHControl(ip);
+function setcolor(ip, r, g, b, type) {
+	if(type == undefined) type = "type1";
+	var chars = characteristics[type];
+
+	var c = new MHControl(ip, chars);
 
 	c.setColor(r, g, b, function(err, success) {
 		if(err) return console.log("Error:", err.message);
@@ -132,8 +178,11 @@ function setcolor(ip, r, g, b) {
 	});
 }
 
-function turnon(ip) {
-	var c = new MHControl(ip);
+function turnon(ip, type) {
+	if(type == undefined) type = "type1";
+	var chars = characteristics[type];
+
+	var c = new MHControl(ip, chars);
 
 	c.turnOn(function(err, success) {
 		if(err) return console.log("Error:", err.message);
@@ -141,8 +190,11 @@ function turnon(ip) {
 	});
 }
 
-function turnoff(ip) {
-	var c = new MHControl(ip);
+function turnoff(ip, type) {
+	if(type == undefined) type = "type1";
+	var chars = characteristics[type];
+
+	var c = new MHControl(ip, chars);
 
 	c.turnOff(function(err, success) {
 		if(err) return console.log("Error:", err.message);
