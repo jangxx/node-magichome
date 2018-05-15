@@ -3,5 +3,6 @@ var Discovery = require('./lib/Discovery.js');
 var CustomMode = require('./lib/CustomMode.js');
 
 module.exports = {
-	Control
+	Control,
+	Discovery
 };
