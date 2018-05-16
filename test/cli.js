@@ -1,4 +1,4 @@
-var MHControl = require('../').Control;
+var { Control: MHControl, Discovery: MHDiscovery } = require('../');
 
 const patterns = Object.freeze({
 	seven_color_cross_fade: 0x25,
@@ -46,6 +46,10 @@ var commands = {
 	"list_types": {
 		desc: "Lists the different characteristic types",
 		fn: list_types
+	},
+	"discover": {
+		desc: "Discover Magic Home controllers in the network",
+		fn: discover
 	},
 	"turnon": {
 		desc: "Turns a light on",
@@ -136,6 +140,23 @@ function list_patterns() {
 	for(let pattern in patterns) {
 		console.log(pattern);
 	}
+}
+
+function discover() {
+	var d = new MHDiscovery();
+
+	d.scan(1000, function(err, devices) {
+		if(err) return console.log("Error:", err.message);
+
+		console.log("Discovered the following devices:");
+		console.log();
+		console.log("Address    \t| ID         \t| Model");
+		console.log("---------------------------------------");
+
+		for(let device of devices) {
+			console.log(`${device.address}\t| ${device.id}\t| ${device.model}`);
+		}
+	});
 }
 
 function query(formatted) {

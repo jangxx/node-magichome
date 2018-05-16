@@ -6,7 +6,7 @@ Functionality ported from https://github.com/beville/flux_led to Node.js.
 Control lights which are usually controlled with [this app](https://itunes.apple.com/us/app/magic-home-wifi/id944574066?mt=8) with Node.
 
 **Control**: Turn lights on and off. Set colors. Start effects. Make programmatic effects.  
-**Discovery**: Discover lights on the network **(Not implemented yet)**  
+**Discovery**: Discover lights on the network.
 **CustomMode**: Install custom effects (color fade, jump or strobe) with up to 16 colors **(Not implemented yet)**  
 
 # Installation
@@ -22,6 +22,15 @@ Simple example:
 
 	var light = new MagicHomeControl("192.168.1.100");
 	light.turnOn(function(err, success) {
+		//do something with the result
+	});
+
+Simple discovery example:
+
+	var MagicHomeDiscovery = require('magic-home').Discovery;
+
+	var discovery = new MagicHomeDiscovery();
+	discovery.scan(500, function(err, data) {
 		//do something with the result
 	});
 
@@ -84,24 +93,19 @@ Closes the connection to the light and leads to the interval function not being 
 
 ## Discovery
 
-Simple example with Promise:
+**constructor**()  
+Creates a new instance of the Discovery Mode. This does not send anything yet.
 
-	var MagicHomeDiscover = require('magic-home').Discovery;
-	var discover = new MagicHomeDiscover();
+**scan**(timeout, callback)
+Broadcasts a discovery packet to the network and then waits `timeout` milliseconds for a reply from the controllers. The callback will be called with `(err, devices)` where `devices` is an array of objects like this:
 
-	discover.scan().then((data) => {
-		console.log(data);
-	});
+	{
+		"address": "<ip address>",
+		"id": "<12 character ID>",
+		"model: "<Model number>"
+	}
 
-Simple example with Callback(err, result):
-
-	var MagicHomeDiscover = require('magic-home').Discovery;
-	var discover = new MagicHomeDiscover();
-
-	discover.scan((err, data) => {
-		console.log(err);
-		console.log(data);
-	});
+This method returns a Promise which resolves to the aforementioned devices array as well.
 
 ## CustomMode
 
