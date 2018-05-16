@@ -6,7 +6,7 @@ Functionality ported from https://github.com/beville/flux_led to Node.js.
 Control lights which are usually controlled with [this app](https://itunes.apple.com/us/app/magic-home-wifi/id944574066?mt=8) with Node.
 
 **Control**: Turn lights on and off. Set colors. Start effects. Make programmatic effects.  
-**Discovery**: Discover lights on the network.
+**Discovery**: Discover lights on the network.  
 **CustomMode**: Install custom effects (color fade, jump or strobe) with up to 16 colors **(Not implemented yet)**  
 
 # Installation
@@ -30,7 +30,7 @@ Simple discovery example:
 	var MagicHomeDiscovery = require('magic-home').Discovery;
 
 	var discovery = new MagicHomeDiscovery();
-	discovery.scan(500, function(err, data) {
+	discovery.scan(500, function(err, devices) {
 		//do something with the result
 	});
 
@@ -96,7 +96,7 @@ Closes the connection to the light and leads to the interval function not being 
 **constructor**()  
 Creates a new instance of the Discovery Mode. This does not send anything yet.
 
-**scan**(timeout, callback)
+**scan**(timeout, callback)  
 Broadcasts a discovery packet to the network and then waits `timeout` milliseconds for a reply from the controllers. The callback will be called with `(err, devices)` where `devices` is an array of objects like this:
 
 	{
