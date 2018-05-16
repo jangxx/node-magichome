@@ -84,7 +84,24 @@ Closes the connection to the light and leads to the interval function not being 
 
 ## Discovery
 
-**Not implemented yet**
+Simple example with Promise:
+
+	var MagicHomeDiscover = require('magic-home').Discovery;
+	var discover = new MagicHomeDiscover();
+
+	discover.scan().then((data) => {
+		console.log(data);
+	});
+
+Simple example with Callback(err, result):
+
+	var MagicHomeDiscover = require('magic-home').Discovery;
+	var discover = new MagicHomeDiscover();
+
+	discover.scan((err, data) => {
+		console.log(err);
+		console.log(data);
+	});
 
 ## CustomMode
 
