@@ -11,28 +11,33 @@ Control lights which are usually controlled with [this app](https://itunes.apple
 
 # Installation
 
-	npm install magic-home
-
+```
+npm install magic-home
+```
 
 # Usage
 
 Simple example:
 
-	var MagicHomeControl = require('magic-home').Control;
+```javascript
+var MagicHomeControl = require('magic-home').Control;
 
-	var light = new MagicHomeControl("192.168.1.100");
-	light.turnOn(function(err, success) {
-		//do something with the result
-	});
+var light = new MagicHomeControl("192.168.1.100");
+light.turnOn(function(err, success) {
+	//do something with the result
+});
+```
 
 Simple discovery example:
 
-	var MagicHomeDiscovery = require('magic-home').Discovery;
+```javascript
+var MagicHomeDiscovery = require('magic-home').Discovery;
 
-	var discovery = new MagicHomeDiscovery();
-	discovery.scan(500, function(err, devices) {
-		//do something with the result
-	});
+var discovery = new MagicHomeDiscovery();
+discovery.scan(500, function(err, devices) {
+	//do something with the result
+});
+```
 
 More examples are in the test directory.
 
@@ -60,17 +65,19 @@ Sets the light to play a built-in pattern. The `pattern` parameter is a string w
 **queryState**(callback)  
 Gets the state of the light. Example state:
 
-	{
-	    "on": true,
-	    "mode": "color", //color, warm_white, custom, special, or one of the built-in patterns
-	    "speed": 50, //playback speed of the current pattern
-	    "color": {
-	        "red": 255,
-	        "green": 0,
-	        "blue": 255
-	    },
-	    "warm_white_percent": 0
-	}
+```javascript
+{
+	"on": true,
+	"mode": "color", //color, warm_white, custom, special, or one of the built-in patterns
+	"speed": 50, //playback speed of the current pattern
+	"color": {
+		"red": 255,
+		"green": 0,
+		"blue": 255
+	},
+	"warm_white_percent": 0
+}
+```
 
 **startEffectMode**(callback)  
 Start the effect mode. In this mode, a single connection will be kept open, instead of reconnecting for every command. The callback gets called with one parameter, which is the `EffectInterface` (documented below). An example can be found in test/effect_test.js.
@@ -99,11 +106,13 @@ Creates a new instance of the Discovery Mode. This does not send anything yet.
 **scan**(timeout, callback)  
 Broadcasts a discovery packet to the network and then waits `timeout` milliseconds for a reply from the controllers. The callback will be called with `(err, devices)` where `devices` is an array of objects like this:
 
-	{
-		"address": "<ip address>",
-		"id": "<12 character ID>",
-		"model: "<Model number>"
-	}
+```javascript
+{
+	"address": "<ip address>",
+	"id": "<12 character ID>",
+	"model: "<Model number>"
+}
+```
 
 This method returns a Promise which resolves to the aforementioned devices array as well.
 
