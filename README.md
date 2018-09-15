@@ -56,9 +56,9 @@ The parameter `characteristics` gives the API some important hints about the beh
 
 **setColor**(red, green, blue, callback)
 
-**setWarmWhite**(level, callback)
+**setWarmWhite**(ww, callback)
 
-**setColorAndWarmWhite**(red, green, blue, level, callback)
+**setColorAndWarmWhite**(red, green, blue, ww, callback)
 
 **setColorWithBrightness**(red, green, blue, brightness, callback)  
 Convenience method to automatically scale down the rgb values to match the brightness parameter
@@ -112,9 +112,9 @@ Broadcasts a discovery packet to the network and then waits `timeout` millisecon
 
 ```javascript
 {
-	"address": "<ip address>",
-	"id": "<12 character ID>",
-	"model: "<Model number>"
+	address: "<ip address>",
+	id: "<12 character ID>",
+	model: "<Model number>"
 }
 ```
 
