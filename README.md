@@ -79,7 +79,7 @@ Gets the state of the light. Example state:
 		"green": 0,
 		"blue": 255
 	},
-	"warm_white_percent": 0
+	"warm_white": 0
 }
 ```
 
