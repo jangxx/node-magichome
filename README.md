@@ -20,48 +20,61 @@ npm install magic-home
 Simple example:
 
 ```javascript
-var MagicHomeControl = require('magic-home').Control;
+const { Control } = require('magic-home');
 
-var light = new MagicHomeControl("192.168.1.100");
-light.turnOn(function(err, success) {
-	//do something with the result
+let light = new MagicHomeControl("192.168.1.100");
+light.setPower(true).then(success => {
+	// do something with the result
 });
 ```
 
 Simple discovery example:
 
 ```javascript
-var MagicHomeDiscovery = require('magic-home').Discovery;
+const { Discovery } = require('magic-home');
 
-var discovery = new MagicHomeDiscovery();
-discovery.scan(500, function(err, devices) {
+let discovery = new Discovery();
+discovery.scan(500).then(devices => {
 	//do something with the result
 });
 ```
 
-More examples are in the test directory.
-
+More examples are in `cli.js` and the examples directory.
 
 # Methods
 
 ## Control
 
-**constructor**(address, characteristics)  
+**Control.patternNames**  
+Returns the hard-coded list of supported patterns as an array.
+
+**constructor**(address, options)  
 Creates a new instance of the API. This does not connect to the light yet.  
-The parameter `characteristics` gives the API some important hints about the behavior of the connected LED controller, like if they acknowledge commands or the format of the data to change the colors. Two sets of characteristics are defined in `test/cli.js`, but unfortunately these parameters have to be found out through trial and error. If the parameter is left undefined, the assumptions found in https://github.com/beville/flux_led are used.
+Accepted options:
+- `wait_for_reply` Whether to wait for a reply from the controller or not. Some controllers acknowledge command and some don't, so this option has to be found out by trial-and-error (Default: true).
+- `log_all_received` Log all received data to the console for debug purposes (Default: false).
+
+**setPower**(on)
+Turns a light either on or off
 
 **turnOn**(callback)
 
 **turnOff**(callback)
 
-**setColor**(red, green, blue, callback)
-
-**setWarmWhite**(ww, callback)
-
 **setColorAndWarmWhite**(red, green, blue, ww, callback)
+Sets both color and warm white value at the same time.
+
+**setColor**(red, green, blue, callback)  
+Convenience method to only set the color values.
+Because the command has to include both color and warm white values, previously seen warm white values will be sent together with the color values.
+
+**setWarmWhite**(ww, callback)  
+Convenience method to only set the warm white value.
+Because the command has to include both color and warm white values, previously seen color values will be sent together with the warm white value.
 
 **setColorWithBrightness**(red, green, blue, brightness, callback)  
-Convenience method to automatically scale down the rgb values to match the brightness parameter
+Convenience method to automatically scale down the rgb values to match the brightness parameter (0 - 100).
+This method uses _setColor()_ internally, so it could set the warm white value to something unexpected.
 
 **setPattern**(pattern, speed, callback)  
 Sets the light to play a built-in pattern. The `pattern` parameter is a string which indicates the pattern (complete list below). The speed parameter has to be between 0 and 100.
@@ -72,19 +85,20 @@ Gets the state of the light. Example state:
 ```javascript
 {
 	"on": true,
-	"mode": "color", //color, warm_white, custom, special, or one of the built-in patterns
-	"speed": 50, //playback speed of the current pattern
+	"mode": "color", // color, warm_white, custom, special, or one of the built-in patterns
+	"speed": 50, // playback speed of the current pattern
 	"color": {
 		"red": 255,
 		"green": 0,
 		"blue": 255
 	},
-	"warm_white": 0
+	"warm_white": 0,
+	"cold_white": 0 // some controllers support this values, but there is currently no way to set it with this library
 }
 ```
 
 **startEffectMode**(callback)  
-Start the effect mode. In this mode, a single connection will be kept open, instead of reconnecting for every command. The callback gets called with one parameter, which is the `EffectInterface` (documented below). An example can be found in test/effect_test.js.
+Start the effect mode. In this mode, a single connection will be kept open, instead of reconnecting for every command. The callback gets called with one parameter, which is the `EffectInterface` (documented below). An example can be found in examples/effect_test.js. This can be used to replicate the music visualization from the app for example.
 
 ## EffectInterface
 
@@ -108,7 +122,7 @@ Closes the connection to the light and leads to the interval function not being 
 Creates a new instance of the Discovery Mode. This does not send anything yet.
 
 **scan**(timeout, callback)  
-Broadcasts a discovery packet to the network and then waits `timeout` milliseconds for a reply from the controllers. The callback will be called with `(err, devices)` where `devices` is an array of objects like this:
+Broadcasts a discovery packet to the network and then waits `timeout` milliseconds for a reply from the controllers. The devices are returned in an array of objects like this:
 
 ```javascript
 {
@@ -117,8 +131,6 @@ Broadcasts a discovery packet to the network and then waits `timeout` millisecon
 	model: "<Model number>"
 }
 ```
-
-This method returns a Promise which resolves to the aforementioned devices array as well.
 
 ## CustomMode
 
