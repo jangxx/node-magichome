@@ -7,7 +7,7 @@ Control lights which are usually controlled with [this app](https://itunes.apple
 
 **Control**: Turn lights on and off. Set colors. Start effects. Make programmatic effects.  
 **Discovery**: Discover lights on the network.  
-**CustomMode**: Install custom effects (color fade, jump or strobe) with up to 16 colors
+**CustomMode**: Install custom effects (color fade, jump or strobe) with up to 16 colors.
 
 # Installation
 
@@ -61,17 +61,17 @@ Returns the hard-coded list of supported patterns as an array.
 **constructor**(address, options)  
 Creates a new instance of the API. This does not connect to the light yet.  
 Accepted options:
-- `wait_for_reply` Whether to wait for a reply from the controller or not. Some controllers acknowledge command and some don't, so this option has to be found out by trial-and-error (Default: true).
+- `wait_for_reply` Whether to wait for a reply from the controller or not. Some controllers acknowledge commands and some don't, so this option has to be found out by trial-and-error (Default: true).
 - `log_all_received` Log all received data to the console for debug purposes (Default: false).
 
-**setPower**(on)
+**setPower**(on)  
 Turns a light either on or off
 
 **turnOn**(callback)
 
 **turnOff**(callback)
 
-**setColorAndWarmWhite**(red, green, blue, ww, callback)
+**setColorAndWarmWhite**(red, green, blue, ww, callback)  
 Sets both color and warm white value at the same time.
 
 **setColor**(red, green, blue, callback)  
@@ -98,7 +98,7 @@ Gets the state of the light. Example state:
 ```javascript
 {
 	"on": true,
-	"mode": "color", // color, warm_white, custom, special, or one of the built-in patterns
+	"mode": "color", // color, custom, special, or one of the built-in patterns
 	"speed": 50, // playback speed of the current pattern
 	"color": {
 		"red": 255,
@@ -147,7 +147,7 @@ Broadcasts a discovery packet to the network and then waits `timeout` millisecon
 
 ## CustomMode
 
-All methods in this class cen be chained together.
+All methods in this class can be chained together.
 
 **constructor**()
 
@@ -161,7 +161,7 @@ The list needs to have the format `[ [r1, g1, b1], [r2, g2, b2], ...]`
 **setTransitionType**(type)  
 Set the type of the transition to be either `fade`, `jump`, or `strobe`.
 
-# Pattern list
+# Built-in patterns
 
 	seven_color_cross_fade
 	red_gradual_change
