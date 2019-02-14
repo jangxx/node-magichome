@@ -15,6 +15,13 @@ Control lights which are usually controlled with [this app](https://itunes.apple
 npm install magic-home
 ```
 
+You can also install the library globally with `npm i -g magic-home`. This gives you access to the Magic Home command line utility, aptly named `magic-home`. Run 
+
+```
+$ magic-home help
+``` 
+to get a list of commands.
+
 # Usage
 
 Simple example:
@@ -22,7 +29,7 @@ Simple example:
 ```javascript
 const { Control } = require('magic-home');
 
-let light = new MagicHomeControl("192.168.1.100");
+let light = new Control("192.168.1.100");
 light.setPower(true).then(success => {
 	// do something with the result
 });

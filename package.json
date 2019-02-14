@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/jangxx/node-magichome/issues"
   },
-  "homepage": "https://github.com/jangxx/node-magichome#readme"
+  "homepage": "https://github.com/jangxx/node-magichome#readme",
+  "bin": {
+    "magic-home": "./cli.js"
+  }
 }

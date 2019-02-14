@@ -1,4 +1,6 @@
-var { Control: MHControl, Discovery: MHDiscovery } = require('./index');
+#!/usr/bin/env node
+
+const { Control: MHControl, Discovery: MHDiscovery } = require('./index');
 
 var commands = {
 	"help": {
@@ -175,5 +177,5 @@ function help() {
 	console.log();
 	console.log("Example command:");
 	console.log();
-	console.log('node test.js turnon "192.168.1.100"');
+	console.log('magic-home turnon "192.168.1.100"');
 }
