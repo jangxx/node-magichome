@@ -17,6 +17,8 @@ var last_color = 0;
 
 control.startEffectMode().then(effects => {
 	effects.start(interval_function);
+}).catch(err => {
+	console.log("Error while connecting:", err.message);
 });
 
 function interval_function() {

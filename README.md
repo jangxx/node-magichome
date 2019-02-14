@@ -45,6 +45,9 @@ More examples are in `cli.js` and the examples directory.
 
 ## Control
 
+All methods return a promise which resolves to the specific value.  
+Each method has an optional callback parameter as well. All of these callbacks will be called with `(err, value)`.
+
 **Control.patternNames**  
 Returns the hard-coded list of supported patterns as an array.
 
@@ -98,7 +101,7 @@ Gets the state of the light. Example state:
 ```
 
 **startEffectMode**(callback)  
-Start the effect mode. In this mode, a single connection will be kept open, instead of reconnecting for every command. The callback gets called with one parameter, which is the `EffectInterface` (documented below). An example can be found in examples/effect_test.js. This can be used to replicate the music visualization from the app for example.
+Start the effect mode. In this mode, a single connection will be kept open, instead of reconnecting for every command. This method resolves to the `EffectInterface` (documented below) once the persistent connection to the controller is established. An example can be found in examples/effect_test.js. This can be used to replicate the music visualization from the app for example.
 
 ## EffectInterface
 
