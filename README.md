@@ -7,7 +7,7 @@ Control lights which are usually controlled with [this app](https://itunes.apple
 
 **Control**: Turn lights on and off. Set colors. Start effects. Make programmatic effects.  
 **Discovery**: Discover lights on the network.  
-**CustomMode**: Install custom effects (color fade, jump or strobe) with up to 16 colors **(Not implemented yet)**  
+**CustomMode**: Install custom effects (color fade, jump or strobe) with up to 16 colors
 
 # Installation
 
@@ -82,6 +82,9 @@ This method uses _setColor()_ internally, so it could set the warm white value t
 **setPattern**(pattern, speed, callback)  
 Sets the light to play a built-in pattern. The `pattern` parameter is a string which indicates the pattern (complete list below). The speed parameter has to be between 0 and 100.
 
+**setCustomPattern**(pattern, speed, callback)  
+Sets the light to play a custom pattern, defined with the `CustomMode` (see below). An example can be found in examples/custom_mode_test.js. The speed parameter has to be between 0 and 100.
+
 **queryState**(callback)  
 Gets the state of the light. Example state:
 
@@ -137,7 +140,19 @@ Broadcasts a discovery packet to the network and then waits `timeout` millisecon
 
 ## CustomMode
 
-**Not implemented yet**
+All methods in this class cen be chained together.
+
+**constructor**()
+
+**addColor**(red, green blue)  
+Appends the specified color to the list of colors in the effect.
+
+**addColorList**(list)  
+Appends multiple colors at once.
+The list needs to have the format `[ [r1, g1, b1], [r2, g2, b2], ...]`
+
+**setTransitionType**(type)  
+Set the type of the transition to be either `fade`, `jump`, or `strobe`.
 
 # Pattern list
 

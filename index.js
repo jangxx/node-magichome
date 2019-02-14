@@ -4,5 +4,6 @@ var CustomMode = require('./lib/CustomMode.js');
 
 module.exports = {
 	Control,
-	Discovery
+	Discovery,
+	CustomMode
 };
