@@ -2,14 +2,18 @@
 
 const { Control: MHControl, Discovery: MHDiscovery } = require('./index');
 
-var commands = {
+const commands = {
 	"help": {
 		desc: "Prints this message",
 		fn: help
 	},
 	"discover": {
-		desc: "Discover Magic Home controllers in the network",
-		fn: discover
+		desc: "Discover Magic Home controllers on the network",
+		fn: discover(false)
+	},
+	"dsicover_json": {
+		desc: "Discover Magic Home controllers and output the result as JSON",
+		fn: discover(true)
 	},
 	"turnon": {
 		desc: "Turns a light on",
@@ -50,27 +54,38 @@ var commands = {
 		fn: query(true),
 		args: ["ip"]
 	}
-}
+};
 
-if(process.argv.length <= 2) {
+const flags = {
+	wait: "Wait for replies",
+	bytes: "Output all received bytes",
+	quiet: "Surpress output"
+};
+
+if (process.argv.length <= 2) {
 	help();
 	process.exit();
 }
 
-var command = commands[process.argv[2]];
-if(command == undefined) {
+const command = commands[process.argv[2]];
+if (command == undefined) {
 	console.log('Invalid command "' + process.argv[2] + '"');
 	console.log();
 	help();
 	process.exit();
 }
 
-var args = process.argv.slice(3);
-if(command.args != undefined && args.length < command.args.length) {
+let args = process.argv.slice(3);
+let additional_args = [];
+if (command.args != undefined && args.length < command.args.length) {
 	console.log("Missing parameters");
 	process.exit();
 }
+if (args.length > command.args.length) {
+	additional_args = args.slice(command.args.length); // add all arguments after the required ones
+}
 
+args = args.slice(0, command.args.length).concat([ parseFlags(additional_args) ]);
 command.fn.apply(this, args);
 
 /*
@@ -78,7 +93,7 @@ command.fn.apply(this, args);
  */
 
 function list_patterns() {
-	console.log("Available patterns:")
+	console.log("Available patterns:");
 	console.log();
 
 	for(let pattern of MHControl.patternNames) {
@@ -86,24 +101,31 @@ function list_patterns() {
 	}
 }
 
-function discover() {
-	MHDiscovery.scan(1000).then(devices => {
-		console.log("Discovered the following devices:");
-		console.log();
-		console.log("Address    \t| ID         \t| Model");
-		console.log("---------------------------------------");
-
-		for(let device of devices) {
-			console.log(`${device.address}\t| ${device.id}\t| ${device.model}`);
-		}
-	}).catch(err => {
-		return console.log("Error:", err.message);
-	});
+function discover(json_output) {
+	return function() {
+		MHDiscovery.scan(1000).then(devices => {
+			if (json_output) {
+				console.log(devices);
+			} else {
+				console.log("Discovered the following devices:");
+				console.log();
+				console.log("Address    \t| ID         \t| Model");
+				console.log("---------------------------------------");
+	
+				for(let device of devices) {
+					console.log(`${device.address}\t| ${device.id}\t| ${device.model}`);
+				}
+			}
+			
+		}).catch(err => {
+			return console.log("Error:", err.message);
+		});
+	};
 }
 
 function query(formatted) {
-	return function(ip) {
-		var c = new MHControl(ip, { wait_for_reply: false });
+	return function(ip, flags) {
+		const c = new MHControl(ip, getOptions(flags));
 
 		c.queryState().then(state => {
 			if(formatted) {
@@ -117,65 +139,98 @@ function query(formatted) {
 	};
 }
 
-function setpattern(ip, pattern, speed) {
-	var c = new MHControl(ip, { wait_for_reply: false });
+function setpattern(ip, pattern, speed, flags) {
+	const c = new MHControl(ip, getOptions(flags));
 
 	c.setPattern(pattern, speed).then(success => {
-		console.log((success) ? "success" : "failed");
+		if (!flags.quiet) console.log((success) ? "success" : "failed");
 	}).catch(err => {
 		return console.log("Error:", err.message);
 	});
 }
 
-function setcolor(ip, r, g, b, ww) {
-	var c = new MHControl(ip, { wait_for_reply: false });
+function setcolor(ip, r, g, b, flags) {
+	const c = new MHControl(ip, getOptions(flags));
 
-	c.setColorAndWarmWhite(r, g, b, ww).then(success => {
-		console.log((success) ? "success" : "failed");
+	c.setColorAndWarmWhite(r, g, b, 0).then(success => {
+		if (!flags.quiet) console.log((success) ? "success" : "failed");
 	}).catch(err => {
 		return console.log("Error:", err.message);
 	});
 }
 
-function turnon(ip) {
-	var c = new MHControl(ip, { wait_for_reply: false });
+function turnon(ip, flags) {
+	const c = new MHControl(ip, getOptions(flags));
 
 	c.turnOn().then(success => {
-		console.log((success) ? "success" : "failed");
+		if (!flags.quiet) console.log((success) ? "success" : "failed");
 	}).catch(err => {
 		return console.log("Error:", err.message);
 	});
 }
 
-function turnoff(ip) {
-	var c = new MHControl(ip, { wait_for_reply: false });
+function turnoff(ip, flags) {
+	const c = new MHControl(ip, getOptions(flags));
 
 	c.turnOff().then(success => {
-		console.log((success) ? "success" : "failed");
+		if (!flags.quiet) console.log((success) ? "success" : "failed");
 	}).catch(err => {
 		return console.log("Error:", err.message);
 	});
 }
 
 function help() {
-	console.log("Available commands:")
+	console.log("Available commands:");
 	console.log();
 
 	for(let command in commands) {
-		var str = command;
+		let str = command;
 
 		if(commands[command].args != undefined) {
-			str += "(" + commands[command].args.reduce((all, arg) => (all + ", " + arg)) + ") ";
+			str += commands[command].args.reduce((all, arg) => (all + " <" + arg + ">"), "") + " ";
 		} else {
-			str += "() ";
+			str += " ";
 		}
 
-		str += commands[command].desc;
 		console.log(str);
+		console.log("    " + commands[command].desc);
 	}
-
 	console.log();
+	
+	console.log("Available flags (do not work with every command):");
+	console.log();
+
+	for (let flag in flags) {
+		console.log(`--${flag}: ${flags[flag]}`);
+	}
+	console.log();
+
 	console.log("Example command:");
 	console.log();
-	console.log('magic-home turnon "192.168.1.100"');
+	console.log('magic-home turnon "192.168.1.100" --bytes');
+}
+
+function parseFlags(args) {
+	let resultFlags = {};
+	let flagNames = Object.keys(flags);
+	for(let flag of flagNames) {
+		resultFlags[flag] = false;
+	}
+
+	for(let arg of args) {
+		for(let flag of flagNames) {
+			if (arg == `--${flag}`) {
+				resultFlags[flag] = true;
+			}
+		}
+	}
+
+	return resultFlags;
+}
+
+function getOptions(flags) {
+	return {
+		wait_for_reply: flags.wait,
+		log_all_received: flags.bytes,
+	};
 }
