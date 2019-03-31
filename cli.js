@@ -11,7 +11,7 @@ const commands = {
 		desc: "Discover Magic Home controllers on the network",
 		fn: discover(false)
 	},
-	"dsicover_json": {
+	"discover_json": {
 		desc: "Discover Magic Home controllers and output the result as JSON",
 		fn: discover(true)
 	},
@@ -77,15 +77,19 @@ if (command == undefined) {
 
 let args = process.argv.slice(3);
 let additional_args = [];
-if (command.args != undefined && args.length < command.args.length) {
-	console.log("Missing parameters");
-	process.exit();
-}
-if (args.length > command.args.length) {
-	additional_args = args.slice(command.args.length); // add all arguments after the required ones
-}
 
-args = args.slice(0, command.args.length).concat([ parseFlags(additional_args) ]);
+if (command.args != undefined) {
+	if (args.length < command.args.length) {
+		console.log("Missing parameters");
+		process.exit();
+	}
+
+	if (args.length > command.args.length) {
+		additional_args = args.slice(command.args.length); // add all arguments after the required ones
+	}
+	
+	args = args.slice(0, command.args.length).concat([ parseFlags(additional_args) ]);
+}
 command.fn.apply(this, args);
 
 /*
