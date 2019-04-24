@@ -64,12 +64,14 @@ Accepted options:
 - `wait_for_reply` Whether to wait for a reply from the controller or not. Some controllers acknowledge commands and some don't, so this option has to be found out by trial-and-error (Default: true).
 - `log_all_received` Log all received data to the console for debug purposes (Default: false).
 
-**setPower**(on)  
+**setPower**(on, callback)  
 Turns a light either on or off
 
-**turnOn**(callback)
+**turnOn**(callback)  
+Convenience method to call `setPower(true)`.
 
-**turnOff**(callback)
+**turnOff**(callback)  
+Convenience method to call `setPower(false)`.
 
 **setColorAndWarmWhite**(red, green, blue, ww, callback)  
 Sets both color and warm white value at the same time.
@@ -84,13 +86,13 @@ Because the command has to include both color and warm white values, previously 
 
 **setColorWithBrightness**(red, green, blue, brightness, callback)  
 Convenience method to automatically scale down the rgb values to match the brightness parameter (0 - 100).
-This method uses _setColor()_ internally, so it could set the warm white value to something unexpected.
+This method uses `setColor()` internally, so it could set the warm white value to something unexpected.
 
 **setPattern**(pattern, speed, callback)  
 Sets the light to play a built-in pattern. The `pattern` parameter is a string which indicates the pattern (complete list below). The speed parameter has to be between 0 and 100.
 
 **setCustomPattern**(pattern, speed, callback)  
-Sets the light to play a custom pattern, defined with the `CustomMode` (see below). An example can be found in examples/custom_mode_test.js. The speed parameter has to be between 0 and 100.
+Sets the light to play a custom pattern, defined with the `CustomMode` (see below). An example can be found in _examples/custom_mode_test.js_. The speed parameter has to be between 0 and 100.
 
 **queryState**(callback)  
 Gets the state of the light. Example state:
@@ -111,7 +113,7 @@ Gets the state of the light. Example state:
 ```
 
 **startEffectMode**(callback)  
-Start the effect mode. In this mode, a single connection will be kept open, instead of reconnecting for every command. This method resolves to the `EffectInterface` (documented below) once the persistent connection to the controller is established. An example can be found in examples/effect_test.js. This can be used to replicate the music visualization from the app for example.
+Start the effect mode. In this mode, a single connection will be kept open, instead of reconnecting for every command. This method resolves to the `EffectInterface` (documented below) once the persistent connection to the controller is established. An example can be found in _examples/effect_test.js_. This can be used to replicate the music visualization from the app for example.
 
 ## EffectInterface
 
@@ -131,6 +133,9 @@ Closes the connection to the light and leads to the interval function not being 
 
 ## Discovery
 
+**Discovery.scan(timeout)**  
+This static method can be used for convenience when the list of clients does not need to be stored within the `Discovery` instance and when the callback parameter is not needed.
+
 **constructor**()  
 Creates a new instance of the Discovery Mode. This does not send anything yet.
 
@@ -144,6 +149,13 @@ Broadcasts a discovery packet to the network and then waits `timeout` millisecon
 	model: "<Model number>"
 }
 ```
+
+_get_ **clients**  
+Contains the list of clients returned in the last call to `scan()`.
+
+_get_ **scanned**  
+Boolean value indicating if `scan()` has already been called on this instance.
+
 
 ## CustomMode
 

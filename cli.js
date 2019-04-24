@@ -59,7 +59,7 @@ const commands = {
 const flags = {
 	wait: "Wait for replies",
 	bytes: "Output all received bytes",
-	quiet: "Surpress output"
+	quiet: "Suppress output"
 };
 
 if (process.argv.length <= 2) {
