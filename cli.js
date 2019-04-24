@@ -32,7 +32,7 @@ const commands = {
 	},
 	"setrgbw": {
 		desc: "Sets the color of a light as well as the warm white value",
-		fn: setcolor,
+		fn: setrgbw,
 		args: ["ip", "red", "green", "blue", "ww"]
 	},
 	"setpattern": {
@@ -157,6 +157,16 @@ function setcolor(ip, r, g, b, flags) {
 	const c = new MHControl(ip, getOptions(flags));
 
 	c.setColorAndWarmWhite(r, g, b, 0).then(success => {
+		if (!flags.quiet) console.log((success) ? "success" : "failed");
+	}).catch(err => {
+		return console.log("Error:", err.message);
+	});
+}
+
+function setrgbw(ip, r, g, b, ww, flags) {
+	const c = new MHControl(ip, getOptions(flags));
+
+	c.setColorAndWarmWhite(r, g, b, ww).then(success => {
 		if (!flags.quiet) console.log((success) ? "success" : "failed");
 	}).catch(err => {
 		return console.log("Error:", err.message);
