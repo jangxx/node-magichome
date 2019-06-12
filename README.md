@@ -63,6 +63,8 @@ Creates a new instance of the API. This does not connect to the light yet.
 Accepted options:
 - `wait_for_reply` Whether to wait for a reply from the controller or not. Some controllers acknowledge commands and some don't, so this option has to be found out by trial-and-error (Default: true).
 - `log_all_received` Log all received data to the console for debug purposes (Default: false).
+- `apply_masks` Set a special mask bit in the `setColor` and `setWarmWhite` methods, which is required for some controllers, which can't set both values at the same time, like bulbs for example.
+This value is automatically set to `true` if `queryState` detects a controller of type `0x25`. (Default: false)
 
 **setPower**(on, callback)  
 Turns a light either on or off
@@ -99,16 +101,17 @@ Gets the state of the light. Example state:
 
 ```javascript
 {
-	"on": true,
-	"mode": "color", // color, custom, special, or one of the built-in patterns
-	"speed": 50, // playback speed of the current pattern
-	"color": {
-		"red": 255,
-		"green": 0,
-		"blue": 255
+	type: 0x33, // can also be 0x04, 0x25 or 0x81 according to the python library
+	on: true,
+	mode: "color", // color, custom, special, or one of the built-in patterns
+	speed: 50, // playback speed of the current pattern
+	color: {
+		red: 255,
+		green: 0,
+		blue: 255
 	},
-	"warm_white": 0,
-	"cold_white": 0 // some controllers support this values, but there is currently no way to set it with this library
+	warm_white: 0,
+	cold_white: 0 // some controllers support this value, but there is currently no way to set it with this library
 }
 ```
 

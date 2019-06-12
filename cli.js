@@ -27,8 +27,13 @@ const commands = {
 	},
 	"setcolor": {
 		desc: "Sets the color of a light",
-		fn: (ip, r, g, b, flags) => setrgbw(ip, r, g, b, 0, flags),
+		fn: setrgb,
 		args: ["ip", "red", "green", "blue"]
+	},
+	"setwarmwhite": {
+		desc: "Sets the warm white value of a light",
+		fn: setww,
+		args: ["ip", "warm_white" ]
 	},
 	"setrgbw": {
 		desc: "Sets the color of a light as well as the warm white value",
@@ -59,7 +64,8 @@ const commands = {
 const flags = {
 	wait: "Wait for replies",
 	bytes: "Output all received bytes",
-	quiet: "Suppress output"
+	quiet: "Suppress output",
+	masks: "Use byte masks when setting colors"
 };
 
 if (process.argv.length <= 2) {
@@ -163,6 +169,26 @@ function setrgbw(ip, r, g, b, ww, flags) {
 	});
 }
 
+function setrgb(ip, r, g, b, flags) {
+	const c = new MHControl(ip, getOptions(flags));
+
+	c.setColor(r, g, b).then(success => {
+		if (!flags.quiet) console.log((success) ? "success" : "failed");
+	}).catch(err => {
+		return console.log("Error:", err.message);
+	});
+}
+
+function setww(ip, ww, flags) {
+	const c = new MHControl(ip, getOptions(flags));
+
+	c.setWarmWhite(ww).then(success => {
+		if (!flags.quiet) console.log((success) ? "success" : "failed");
+	}).catch(err => {
+		return console.log("Error:", err.message);
+	});
+}
+
 function turnon(ip, flags) {
 	const c = new MHControl(ip, getOptions(flags));
 
@@ -236,5 +262,6 @@ function getOptions(flags) {
 	return {
 		wait_for_reply: flags.wait,
 		log_all_received: flags.bytes,
+		apply_masks: flags.masks,
 	};
 }
