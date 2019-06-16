@@ -61,13 +61,13 @@ Returns the hard-coded list of supported patterns as an array.
 **constructor**(address, options)  
 Creates a new instance of the API. This does not connect to the light yet.  
 Accepted options:
-- `wait_for_reply` Whether to wait for a reply from the controller or not. Some controllers acknowledge commands and some don't, so this option has to be found out by trial-and-error (Default: true).
+- `wait_for_reply` Whether to wait for a reply from the controller or not. Some controllers acknowledge commands and some don't, so this option has to be found out by trial-and-error. **If the Promise does not resolve after a command was completed successfully, you probably need to set this to false.** (Default: true).
 - `log_all_received` Log all received data to the console for debug purposes (Default: false).
 - `apply_masks` Set a special mask bit in the `setColor` and `setWarmWhite` methods, which is required for some controllers, which can't set both values at the same time, like bulbs for example.
 This value is automatically set to `true` if `queryState` detects a controller of type `0x25`. (Default: false)
 
 **setPower**(on, callback)  
-Turns a light either on or off
+Turns a light either on or off.
 
 **turnOn**(callback)  
 Convenience method to call `setPower(true)`.
