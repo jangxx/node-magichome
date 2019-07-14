@@ -18,9 +18,9 @@ npm install magic-home
 You can also install the library globally with `npm i -g magic-home`. This gives you access to the Magic Home command line utility, aptly named `magic-home`. Run 
 
 ```
-$ magic-home help
+$ magic-home
 ``` 
-to get a list of commands.
+to get a list of commands and options.
 
 # Usage
 
