@@ -1,6 +1,6 @@
 {
   "name": "magic-home",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "An implementation of the \"Magic Home\" app functionality",
   "main": "index.js",
   "scripts": {
@@ -25,5 +25,9 @@
   "homepage": "https://github.com/jangxx/node-magichome#readme",
   "bin": {
     "magic-home": "./cli.js"
+  },
+  "dependencies": {
+    "commander": "^2.20.0",
+    "merge-options": "^1.0.1"
   }
 }
