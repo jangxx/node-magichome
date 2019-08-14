@@ -1,16 +1,16 @@
 const { Control } = require('../');
 
 const ip = process.argv[2];
-const wait_for_reply = (process.argv.length > 2) ? (process.argv[3] == "true") : false;
+const ackMask = (process.argv.length > 2) ? process.argv[3] : 0;
 
 if(ip == undefined) {
-	console.log("Usage: node effect_test.js <ip> [wait_for_reply]");
+	console.log("Usage: node effect_test.js <ip> [ackMask]");
 	console.log();
 	console.log("Demostrates the use of the effect interface, by showing a simple interval function which changes the color roughly once a second");
 	process.exit();
 }
 
-const control = new Control(ip, { wait_for_reply });
+const control = new Control(ip, { ack: Control.ackMask(ackMask) });
 
 var last_change = 0;
 var last_color = 0;
@@ -22,7 +22,7 @@ control.startEffectMode().then(effects => {
 });
 
 function interval_function() {
-	// this refers to the effect interface
+	// "this" refers to the effect interface
 	let now = (new Date()).getTime();
 
 	if (now - last_change < 1000) {

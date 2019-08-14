@@ -9,7 +9,7 @@ if(ip == undefined) {
 	process.exit();
 }
 
-let control = new Control(ip, { wait_for_reply: false});
+let control = new Control(ip, { ack: Control.ackMask(0) });
 
 let my_effect = new CustomMode();
 
