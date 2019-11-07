@@ -55,10 +55,10 @@ More examples are in `cli.js` and the examples directory.
 All methods return a promise which resolves to the specific value.  
 Each method has an optional callback parameter as well. All of these callbacks will be called with `(err, value)`.
 
-*get* **Control.patternNames**  
+*static get* **patternNames**  
 Returns the hard-coded list of supported patterns as an array.
 
-**Control.ackMask**(mask)  
+*static* **ackMask**(mask)  
 Create an `ack` option object by supplying a bitmask with the bits representing booleans. Bit 1 = power, Bit 2 = color, Bit 3 = pattern, Bit 4 = custom_pattern.  
 Example: `Control.ackMask(1)` would set `power` to `true` and all other values to `false`.
 
@@ -66,9 +66,11 @@ Example: `Control.ackMask(1)` would set `power` to `true` and all other values t
 Creates a new instance of the API. This does not connect to the light yet.  
 Accepted options:
 - `ack` An object of the form `{ power: true, color: true, pattern: true, custom_pattern: true }` indicating for which types of command an acknowledging response is expected. Some controllers acknowledge some commands and others don't, so this option has to be found out by trial-and-error. If the Promise does not resolve after a command was completed successfully, you probably need to set some of these to false. Use the CLI with the *--bytes* and *--ack 15* parameter to find out if the controller sends replies. You can use the `Control.ackMask(mask)` static function for convenience to set all options with less code.
-- `log_all_received` Log all received data to the console for debug purposes (Default: false).
+- `log_all_received` Log all received data to the console for debug purposes. (Default: false).
 - `apply_masks` Set a special mask bit in the `setColor` and `setWarmWhite` methods, which is required for some controllers, which can't set both values at the same time, like bulbs for example.
 This value is automatically set to `true` if `queryState` detects a controller of type `0x25`. (Default: false)
+- `connect_timeout` Duration in milliseconds after which a controller will be regarded as non-reachable, if a connection can not be established.
+Normally, this should be handled by your OS and you get an _EHOSTUNREACH_ error, but this allows you to set a custom timeout yourself. (Default: null _[No timeout/let the OS handle it]_)
 - `wait_for_reply` **[Deprecated, use ack option instead]**
 
 **setPower**(on, callback)  
@@ -141,11 +143,11 @@ Closes the connection to the light and leads to the interval function not being 
 
 ## Discovery
 
-**Discovery.scan(timeout)**  
+*static* **scan(timeout)**  
 This static method can be used for convenience when the list of clients does not need to be stored within the `Discovery` instance and when the callback parameter is not needed.
 
 **constructor**()  
-Creates a new instance of the Discovery Mode. This does not send anything yet.
+Creates a new instance of the Discovery Mode. This does not perform the actual scan yet.
 
 **scan**(timeout, callback)  
 Broadcasts a discovery packet to the network and then waits `timeout` milliseconds for a reply from the controllers. The devices are returned in an array of objects like this:

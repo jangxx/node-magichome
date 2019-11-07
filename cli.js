@@ -8,6 +8,7 @@ program
 	.version(require('./package.json').version)
 	.option('--bytes', "Output all received bytes", false)
 	.option('-Q, --quiet', "Suppress output", false)
+	.option('-T, --timeout [timeout]', "Connection timeout in milliseconds", null)
 	.option('--masks', "Use byte masks when setting colors", false)
 	.option('-A, --ack <mask>', "Wait for replies by setting a bitmask. Bits: 1=power 2=color 3=pattern 4=custom_pattern. Set to 15 to wait for all.", Control.ackMask, 0);
 
@@ -180,6 +181,7 @@ function getOptions(options) {
 	return {
 		log_all_received: options.bytes === true,
 		apply_masks: options.masks === true,
-		ack: options.ack
+		ack: options.ack,
+		connect_timeout: options.timeout,
 	};
 }
