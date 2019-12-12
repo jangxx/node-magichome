@@ -66,11 +66,13 @@ Example: `Control.ackMask(1)` would set `power` to `true` and all other values t
 Creates a new instance of the API. This does not connect to the light yet.  
 Accepted options:
 - `ack` An object of the form `{ power: true, color: true, pattern: true, custom_pattern: true }` indicating for which types of command an acknowledging response is expected. Some controllers acknowledge some commands and others don't, so this option has to be found out by trial-and-error. If the Promise does not resolve after a command was completed successfully, you probably need to set some of these to false. Use the CLI with the *--bytes* and *--ack 15* parameter to find out if the controller sends replies. You can use the `Control.ackMask(mask)` static function for convenience to set all options with less code.
-- `log_all_received` Log all received data to the console for debug purposes. (Default: false).
+- `log_all_received` Log all received data to the console for debug purposes. (Default: false)
 - `apply_masks` Set a special mask bit in the `setColor` and `setWarmWhite` methods, which is required for some controllers, which can't set both values at the same time, like bulbs for example.
-This value is automatically set to `true` if `queryState` detects a controller of type `0x25`. (Default: false)
+This value is automatically set to `true` if `queryState` detects a controller of type `0x25`, `0x35` or `0x44`. (Default: false)
 - `connect_timeout` Duration in milliseconds after which a controller will be regarded as non-reachable, if a connection can not be established.
 Normally, this should be handled by your OS and you get an _EHOSTUNREACH_ error, but this allows you to set a custom timeout yourself. (Default: null _[No timeout/let the OS handle it]_)
+- `cold_white_support` Enable support for changing cold white values. Only enable this if your controller actually supports it, otherwise you won't be able to change the colors.
+This value is automatically set to `true` if `queryState` detects a controller of type `0x35`. (Default: false)
 - `wait_for_reply` **[Deprecated, use ack option instead]**
 
 **setPower**(on, callback)  
@@ -85,13 +87,20 @@ Convenience method to call `setPower(false)`.
 **setColorAndWarmWhite**(red, green, blue, ww, callback)  
 Sets both color and warm white value at the same time.
 
+**setColorAndWhites**(red, green, blue, ww, cw, callback)  
+Sets color, warm white as well as cold white values at the same time, if `cold_white_support` is enabled.
+
 **setColor**(red, green, blue, callback)  
-Convenience method to only set the color values.
-Because the command has to include both color and warm white values, previously seen warm white values will be sent together with the color values.
+Sets only the color values.
+Because the command has to include both color and white values, previously seen white values will be sent together with the color values, if masks are not enabled.
 
 **setWarmWhite**(ww, callback)  
-Convenience method to only set the warm white value.
-Because the command has to include both color and warm white values, previously seen color values will be sent together with the warm white value.
+Set only the the warm white value.
+Because the command has to include both color and white values, previously seen color and cold white values will be sent together with the warm white value, if masks are not enabled.
+
+**setWhites**(ww, cw, callback)  
+Set only the warm and cold white values.
+Because the command has to include both color and white values, previously seen color values will be sent together with the white values, if masks are not enabled.
 
 **setColorWithBrightness**(red, green, blue, brightness, callback)  
 Convenience method to automatically scale down the rgb values to match the brightness parameter (0 - 100).
@@ -118,7 +127,7 @@ Gets the state of the light. Example state:
 		blue: 255
 	},
 	warm_white: 0,
-	cold_white: 0 // some controllers support this value, but there is currently no way to set it with this library
+	cold_white: 0 // some controllers support this value, but you can only set if when cold_white_support is enabled
 }
 ```
 
