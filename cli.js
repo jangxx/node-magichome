@@ -10,6 +10,7 @@ program
 	.option('-Q, --quiet', "Suppress output", false)
 	.option('-T, --timeout [timeout]', "Connection timeout in milliseconds", null)
 	.option('--masks', "Use byte masks when setting colors", false)
+	.option('--cw_support', "Enable support for setting the cold white values", false)
 	.option('-A, --ack <mask>', "Wait for replies by setting a bitmask. Bits: 1=power 2=color 3=pattern 4=custom_pattern. Set to 15 to wait for all.", Control.ackMask, 0);
 
 program.command("discover")
@@ -44,10 +45,20 @@ program.command("setrgbw <ip> <red> <green> <blue> <ww>")
 	.description("Set the color and warm white values")
 	.action(setrgbw);
 
+program.command("setrgbww <ip> <red> <green> <blue> <ww> <cw>")
+	.alias("rgbww")
+	.description("Set the color and warm and cold white values")
+	.action(setrgbww);
+
 program.command("setwarmwhite <ip> <ww>")
 	.alias("ww")
 	.description("Set the warm white value")
 	.action(setww);
+
+program.command("setwhites <ip> <ww> <cw>")
+	.alias("whites")
+	.description("Set the warm and cold white value")
+	.action(setwhites);
 
 program.command("setpattern <ip> <pattern> <speed>")
 	.alias("pattern")
@@ -127,6 +138,16 @@ function setpattern(ip, pattern, speed, options) {
 	});
 }
 
+function setrgbww(ip, r, g, b, ww, cw, options) {
+	const c = new Control(ip, getOptions(options.parent));
+
+	c.setColorAndWhites(r, g, b, ww, cw).then(success => {
+		if (!options.quiet) console.log((success) ? "success" : "failed");
+	}).catch(err => {
+		return console.log("Error:", err.message);
+	});
+}
+
 function setrgbw(ip, r, g, b, ww, options) {
 	const c = new Control(ip, getOptions(options.parent));
 
@@ -151,6 +172,16 @@ function setww(ip, ww, options) {
 	const c = new Control(ip, getOptions(options.parent));
 
 	c.setWarmWhite(ww).then(success => {
+		if (!options.quiet) console.log((success) ? "success" : "failed");
+	}).catch(err => {
+		return console.log("Error:", err.message);
+	});
+}
+
+function setwhites(ip, ww, cw, options) {
+	const c = new Control(ip, getOptions(options.parent));
+
+	c.setWhites(ww, cw).then(success => {
 		if (!options.quiet) console.log((success) ? "success" : "failed");
 	}).catch(err => {
 		return console.log("Error:", err.message);
@@ -183,5 +214,6 @@ function getOptions(options) {
 		apply_masks: options.masks === true,
 		ack: options.ack,
 		connect_timeout: options.timeout,
+		cold_white_support: option.cw_support === true,
 	};
 }
