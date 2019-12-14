@@ -214,6 +214,6 @@ function getOptions(options) {
 		apply_masks: options.masks === true,
 		ack: options.ack,
 		connect_timeout: options.timeout,
-		cold_white_support: option.cw_support === true,
+		cold_white_support: options.cw_support === true,
 	};
 }
