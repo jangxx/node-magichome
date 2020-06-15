@@ -112,6 +112,9 @@ Sets the light to play a built-in pattern. The `pattern` parameter is a string w
 **setCustomPattern**(pattern, speed, callback)  
 Sets the light to play a custom pattern, defined with the `CustomMode` (see below). An example can be found in _examples/custom_mode_test.js_. The speed parameter has to be between 0 and 100.
 
+**setIaPattern**(code, speed, callback)
+When using the magic home SPI to controller digital LED strips like WS2812B, you can use this to trigger an built in function. The function codes can be found in the magic home app, values 1 to 300 are accepted. The speed parameter has to be between 0 and 100.
+
 **queryState**(callback)  
 Gets the state of the light. Example state:
 
@@ -119,8 +122,9 @@ Gets the state of the light. Example state:
 {
 	type: 0x33, // can also be 0x04, 0x25 or 0x81 according to the python library
 	on: true,
-	mode: "color", // color, custom, special, or one of the built-in patterns
-	speed: 50, // playback speed of the current pattern
+	mode: "color", // color, custom, special, pattern, ia_pattern
+	pattern: 255 // number of the ia_pattern, or name of pattern
+	speed: 50, // playback speed of the current pattern / function
 	color: {
 		red: 255,
 		green: 0,
