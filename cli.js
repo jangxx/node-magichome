@@ -146,13 +146,12 @@ function setpattern(ip, pattern, speed, options) {
 function setiapattern(ip, code, speed, options) {
 	const c = new Control(ip, getOptions(options.parent));
 
-	c.setIaPattern(Number(code), speed).then(success => {
+	c.setIAPattern(Number(code), speed).then(success => {
 		if (!options.quiet) console.log((success) ? "success" : "failed");
 	}).catch(err => {
 		return console.log("Error:", err.message);
 	});
 }
-
 
 function setrgbww(ip, r, g, b, ww, cw, options) {
 	const c = new Control(ip, getOptions(options.parent));
