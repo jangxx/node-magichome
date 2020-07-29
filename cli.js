@@ -9,6 +9,7 @@ program
 	.option('--bytes', "Output all received bytes", false)
 	.option('-Q, --quiet', "Suppress output", false)
 	.option('-T, --timeout [timeout]', "Connection timeout in milliseconds", null)
+	.option('-C, --cmd-timeout [timeout]', "Command timeout in milliseconds", 1000)
 	.option('--masks', "Use byte masks when setting colors", false)
 	.option('--cw_support', "Enable support for setting the cold white values", false)
 	.option('-A, --ack <mask>', "Wait for replies by setting a bitmask. Bits: 1=power 2=color 3=pattern 4=custom_pattern. Set to 15 to wait for all.", Control.ackMask, 0);
@@ -224,11 +225,14 @@ function turnoff(ip, options) {
 }
 
 function getOptions(options) {
+	const cmd_timeout = (options.cmdTimeout === "null") ? null : options.cmdTimeout;
+
 	return {
 		log_all_received: options.bytes === true,
 		apply_masks: options.masks === true,
 		ack: options.ack,
 		connect_timeout: options.timeout,
+		command_timeout: cmd_timeout,
 		cold_white_support: options.cw_support === true,
 	};
 }

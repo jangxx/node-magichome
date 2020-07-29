@@ -71,6 +71,7 @@ Accepted options:
 This value is automatically set to `true` if `queryState` detects a controller of type `0x25`, `0x35` or `0x44`. (Default: false)
 - `connect_timeout` Duration in milliseconds after which a controller will be regarded as non-reachable, if a connection can not be established.
 Normally, this should be handled by your OS and you get an _EHOSTUNREACH_ error, but this allows you to set a custom timeout yourself. (Default: null _[No timeout/let the OS handle it]_)
+- `command_timeout` Duration in milliseconds after which the library will consider an acknowledged command as lost. Set to `null` to disable the timeout. (Default: 1000)
 - `cold_white_support` Enable support for changing cold white values. Only enable this if your controller actually supports it, otherwise you won't be able to change the colors.
 This value is automatically set to `true` if `queryState` detects a controller of type `0x35`. (Default: false)
 - `wait_for_reply` **[Deprecated, use ack option instead]**
@@ -218,3 +219,14 @@ Set the type of the transition to be either `fade`, `jump`, or `strobe`.
 	purple_strobe_flash
 	white_strobe_flash
 	seven_color_jumping
+
+# Troubleshooting
+
+### My promises don't resolve
+
+https://github.com/jangxx/node-magichome/wiki/Understanding-the-ack-parameter
+
+### My promises always reject with a "Command timed out" error
+
+https://github.com/jangxx/node-magichome/wiki/Understanding-the-ack-parameter
+
