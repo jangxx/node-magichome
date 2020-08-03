@@ -86,10 +86,10 @@ Convenience method to call `setPower(true)`.
 Convenience method to call `setPower(false)`.
 
 **setColorAndWarmWhite**(red, green, blue, ww, callback)  
-Sets both color and warm white value at the same time.
+Sets both color and warm white value at the same time. This method will not work on lights that don't support both colors and whites being activated at the same time; use either `setColor` or `setWarmWhite`.
 
 **setColorAndWhites**(red, green, blue, ww, cw, callback)  
-Sets color, warm white as well as cold white values at the same time, if `cold_white_support` is enabled.
+Sets color, warm white as well as cold white values at the same time, if `cold_white_support` is enabled. This method will not work on lights that don't support both colors and whites being being activated at the same time; use either `setColor` or `setWhites`.
 
 **setColor**(red, green, blue, callback)  
 Sets only the color values.
