@@ -65,7 +65,9 @@ Example: `Control.ackMask(1)` would set `power` to `true` and all other values t
 **constructor**(address, options)  
 Creates a new instance of the API. This does not connect to the light yet.  
 Accepted options:
-- `ack` An object of the form `{ power: true, color: true, pattern: true, custom_pattern: true }` indicating for which types of command an acknowledging response is expected. Some controllers acknowledge some commands and others don't, so this option has to be found out by trial-and-error. If the Promise does not resolve after a command was completed successfully, you probably need to set some of these to false. Use the CLI with the *--bytes* and *--ack 15* parameter to find out if the controller sends replies. You can use the `Control.ackMask(mask)` static function for convenience to set all options with less code.
+- `ack` An object of the form `{ power: true, color: true, pattern: true, custom_pattern: true }` indicating for which types of command an acknowledging response is expected. Some controllers acknowledge some commands and others don't, so this option has to be found out by trial-and-error.
+Check out [the wiki](https://github.com/jangxx/node-magichome/wiki/Understanding-the-ack-parameter) for more information about this parameter.
+You can use the `Control.ackMask(mask)` static function for convenience to set all options with less code.
 - `log_all_received` Log all received data to the console for debug purposes. (Default: false)
 - `apply_masks` Set a special mask bit in the `setColor` and `setWarmWhite` methods, which is required for some controllers, which can't set both values at the same time, like bulbs for example.
 This value is automatically set to `true` if `queryState` detects a controller of type `0x25`, `0x35` or `0x44`. (Default: false)
@@ -86,10 +88,12 @@ Convenience method to call `setPower(true)`.
 Convenience method to call `setPower(false)`.
 
 **setColorAndWarmWhite**(red, green, blue, ww, callback)  
-Sets both color and warm white value at the same time. This method will not work on lights that don't support both colors and whites being activated at the same time; use either `setColor` or `setWarmWhite`.
+Sets both color and warm white value at the same time. 
+This method will not work on lights that don't support both colors and whites being activated at the same time; use either `setColor` or `setWarmWhite`.
 
 **setColorAndWhites**(red, green, blue, ww, cw, callback)  
-Sets color, warm white as well as cold white values at the same time, if `cold_white_support` is enabled. This method will not work on lights that don't support both colors and whites being being activated at the same time; use either `setColor` or `setWhites`.
+Sets color, warm white as well as cold white values at the same time, if `cold_white_support` is enabled. 
+This method will not work on lights that don't support both colors and whites being being activated at the same time; use either `setColor` or `setWhites`.
 
 **setColor**(red, green, blue, callback)  
 Sets only the color values.
