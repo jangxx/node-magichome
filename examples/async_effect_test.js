@@ -24,7 +24,7 @@ effectMode.connect().then(() => {
         }
 
         await ctx.setColor(255, 0, 0);
-        await ctx.delayRemaining(500);
+        await ctx.delayRemaining(500); // delay until 500ms since the pinned time have passed
         await ctx.setColor(0, 255, 0);
         await ctx.delayRemaining(500);
         await ctx.setColor(0, 0, 255);
