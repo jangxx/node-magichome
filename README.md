@@ -141,23 +141,56 @@ Gets the state of the light. Example state:
 ```
 
 **startEffectMode**(callback)  
-Start the effect mode. In this mode, a single connection will be kept open, instead of reconnecting for every command. This method resolves to the `EffectInterface` (documented below) once the persistent connection to the controller is established. An example can be found in _examples/effect_test.js_. This can be used to replicate the music visualization from the app for example.
+**[Deprecated, use getAsyncEffectMode instead]**
+
+**getAsyncEffectMode**()  
+Returns a instance of the async effect interface `AsyncEffectInterface` (documented below).
+This interface allows the creation of effects which constantly update the controller by sending data over a single persistent connection, which can be used to replicate the music visualization from the app for example.
+The returned interface does not connect to the controller immediately.
+An example can be found in _examples/async_effect_test.js_.
 
 ## EffectInterface
+**[Deprecated, use AsyncEffectInterface instead]**
 
-An instance of this class is obtained by calling `startEffectMode`.
+## AsyncEffectInterface
+
+An instance of this class is obtained by calling `getAsyncEffectMode`.
+
+_get_ **connected**  
+Boolean property indicating the current connection status.
+
+**connect**()  
+Establish a connection to the controller.
+The method returns a promise that resolves once the connection has been established.
 
 **start**(interval_function)  
-Starts the effect mode. The `interval_function` will be called every time the last command has been fully processed. It will be called without any parameters.
+Starts the effect with the supplied function.
+The `interval_function` will be asynchronously called (awaited) forever in a loop, until `stop()` is called.
+The supplied function should therefore either be declared `async` or return a Promise.
+It will be called with a reference to the `AsyncEffectInterface`.
 
-**setColor**(red, green, blue)  
-This method is only supposed to be called from within the `interval_function`. Sets the color.
-
-**delay**(milliseconds)  
-This method is only supposed to be called from within the `interval_function`. Calling this method, will lead to the next call to the interval function to happen after the specified time.
+**end**()  
+Stops any remaining effects and closes the connection to the controller.
 
 **stop**()  
-Closes the connection to the light and leads to the interval function not being called anymore.
+Calling this method will stop the execution of the `interval_function` at the next async call it performs, stopping the effect.
+The connection to the controller will not be severed though - a call to `end()` is still neccessary.
+
+**delay**(milliseconds)  
+This method is only supposed to be called (awaited) from within the `interval_function`. 
+Calling this method, will delay execution of the effect function for the given amount of time.
+
+### Color setting methods
+
+All the color setting methods
+
+- **setColorAndWarmWhite**
+- **setColorAndWhites**
+- **setColor**
+- **setWarmWhite**
+- **setWhites**
+
+function essentially the same as their counterparts on the `Control` class, with the key difference that they do not take a callback argument and that they should only be called (awaited) from within the `interval_function`.
 
 ## Discovery
 
