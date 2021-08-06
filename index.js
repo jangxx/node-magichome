@@ -1,9 +1,11 @@
-var Control = require('./lib/Control.js');
-var Discovery = require('./lib/Discovery.js');
-var CustomMode = require('./lib/CustomMode.js');
+const Control = require('./lib/Control');
+const Discovery = require('./lib/Discovery');
+const CustomMode = require('./lib/CustomMode');
+const { EffectTimingHelper } = require('./lib/AsyncEffectInterface');
 
 module.exports = {
 	Control,
 	Discovery,
-	CustomMode
+	CustomMode,
+	EffectTimingHelper,
 };
