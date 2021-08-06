@@ -159,6 +159,9 @@ An instance of this class is obtained by calling `getAsyncEffectMode`.
 _get_ **connected**  
 Boolean property indicating the current connection status.
 
+_get/set_ **userData**  
+This property is just an empty object that you can use to pass arbitrary data to the effect function.
+
 **connect**()  
 Establish a connection to the controller.
 The method returns a promise that resolves once the connection has been established.
@@ -233,6 +236,23 @@ The list needs to have the format `[ [r1, g1, b1], [r2, g2, b2], ...]`
 
 **setTransitionType**(type)  
 Set the type of the transition to be either `fade`, `jump`, or `strobe`.
+
+## EffectTimingHelper
+
+This utility class simplifies the timing within the effect function of the `AsyncEffectInterface`.
+
+**constructor**(parent)  
+Creates and binds the helper to an instance of an `AsyncEffectInterface`.
+
+**start**()  
+Sets the current time as the start time of the effect.
+
+**isStarted**()  
+Returns true if the start time was set.
+
+**delayRemaining**(milliseconds)  
+Delays the effect is such a way that the next command will be called the given amount of time from the start of the effect.
+This also sets the start time to the current time.
 
 # Built-in patterns
 
