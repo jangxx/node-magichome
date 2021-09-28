@@ -1,6 +1,6 @@
 {
   "name": "magic-home",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "An implementation of the \"Magic Home\" app functionality",
   "main": "index.js",
   "scripts": {
@@ -29,5 +29,9 @@
   "dependencies": {
     "commander": "^2.20.0",
     "merge-options": "^1.0.1"
-  }
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.1"
+  },
+  "types": "index.d.ts"
 }

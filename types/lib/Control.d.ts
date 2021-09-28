@@ -1,7 +1,7 @@
 export = Control;
 declare class Control {
     static get patternNames(): string[];
-    static ackMask(mask: any): {
+    static ackMask(mask: number): {
         power: boolean;
         color: boolean;
         pattern: boolean;
@@ -142,11 +142,16 @@ declare class Control {
      */
     setCustomPattern(pattern: CustomMode, speed: number, callback?: Function): Promise<boolean>;
     /**
-     * (Deprecated) Creates a new EffectInterface, which establishes a persistent connection to the controller
+     * @deprecated Creates a new EffectInterface, which establishes a persistent connection to the controller
      * @param {function} callback
      * @returns {Promise<EffectInterface>}
      */
     startEffectMode(callback?: Function): Promise<EffectInterface>;
+    /**
+	 * Get a new instance of the AsyncEffectInterface, which is used to create and drive a persistent connection to
+	 * the controller in order to create dynamic effects
+	 * @returns {AsyncEffectInterface}
+	 */
     getAsyncEffectMode(): AsyncEffectInterface;
     /**
      * Queries the controller for it's current state

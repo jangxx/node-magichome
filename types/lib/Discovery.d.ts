@@ -3,8 +3,8 @@ declare class Discovery {
     /**
      * Convenience method which shortens the discovery operation to a single line
      */
-    static scan(timeout: any): any;
-    get clients(): any[];
+    static scan(timeout: number): Promise<DiscoveryResult[]>;
+    get clients(): DiscoveryResult[];
     get scanned(): boolean;
     /**
      * Send a scan packet into the network
@@ -12,5 +12,15 @@ declare class Discovery {
      * @param {function} callback Called with (err, clients)
      * @returns A Promise resolving to the found clients
      */
-    scan(timeout?: number, callback?: Function): any;
+    scan(timeout?: number, callback?: Function): Promise<DiscoveryResult[]>;
+}
+
+declare namespace Discovery {
+    export { DiscoveryResult }
+}
+
+type DiscoveryResult = {
+    address: string,
+    id: string,
+    model: string,
 }

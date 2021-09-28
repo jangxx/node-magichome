@@ -1,17 +1,17 @@
 export class AsyncEffectInterface {
-    constructor(address: any, port: any, parent: any, color_ack: any, apply_masks: any);
+    constructor(address: string, port: number, parent: any, color_ack: boolean, apply_masks: boolean);
     userData: {};
     get connected(): boolean;
-    connect(): any;
+    connect(): Promise<void>;
     start(interval_function: any): any;
     stop(): void;
     end(): void;
-    delay(milliseconds: any): any;
-    setColorAndWarmWhite(red: any, green: any, blue: any, warm_white: any): any;
-    setColorAndWhites(red: any, green: any, blue: any, warm_white: any, cold_white: any): any;
-    setColor(red: any, green: any, blue: any): any;
-    setWarmWhite(warm_white: any): any;
-    setWhites(warm_white: any, cold_white: any): any;
+    delay(milliseconds: number): Promise<void>;
+    setColorAndWarmWhite(red: number, green: number, blue: number, warm_white: number): Promise<void>;
+    setColorAndWhites(red: number, green: number, blue: number, warm_white: number, cold_white: number): Promise<void>;
+    setColor(red: number, green: number, blue: number): Promise<void>;
+    setWarmWhite(warm_white: number): Promise<void>;
+    setWhites(warm_white: number, cold_white: number): Promise<void>;
 }
 /**
  * A class that helps with timing an effect where each of the commands are asynchronous
