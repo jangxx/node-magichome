@@ -1,23 +1,21 @@
-const { ControlAddressable, AddressableMultiColorMode } = require("../");
+const { ControlAddressable, AddressableColorStopMode, SingleSegmentsMode, AddressableCustomModeStep } = require("../");
 
 const controller = new ControlAddressable("192.168.0.65", { log_add_received: true, command_timeout: 2000 });
 
-const mode = new AddressableMultiColorMode(50);
-mode.setEffect("breathing");
+// const steps = [
+//     (new AddressableCustomModeStep())
+//         .setEffect(2)
+//         .setForegroundColor(255,0,0)
+//         .setBackgroundColor(0,255,0)
+// ];
 
-for (let i = 0; i < 30; i++) {
-    switch (i % 3) {
-        case 0:
-            mode.addColorStop(i, 255, 0, 0);
-            break;
-        case 1:
-            mode.addColorStop(i, 0, 255, 0);
-            break;
-        case 2:
-            mode.addColorStop(i, 0, 0, 255);
-            break;
-    }
-}
+// const mode = new SingleSegmentsMode(50);
+// mode.setPointColor(5, 255, 0, 0);
+// mode.setPointColor(25, 255, 0, 0);
+
+const mode = new AddressableColorStopMode(50);
+mode.addColorStop(10, 255, 0, 0);
+mode.addColorStop(40, 0, 0, 255);
 
 async function main() {
     // await controller.turnOn();
@@ -35,6 +33,9 @@ async function main() {
     // await controller.setRbmMode(2);
 
     await controller.setMultiColorMode(mode);
+    // await controller.setCustomMode(steps);
+    // console.log(await controller.queryDeviceConfig());
+    // console.log(await controller.setColor(0, 255, 0));
 }
 
 main().then(() => {}, err => console.error(err));

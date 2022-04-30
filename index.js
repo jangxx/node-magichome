@@ -3,7 +3,8 @@ const ControlAddressable = require("./lib/ControlAddressable");
 const Discovery = require('./lib/Discovery');
 const CustomMode = require('./lib/CustomMode');
 const { EffectTimingHelper } = require('./lib/AsyncEffectInterface');
-const { AddressableMultiColorMode } = require("./lib/AddressableMultiColorMode");
+const { AddressableColorStopMode, SingleSegmentsMode } = require("./lib/AddressableMultiColorMode");
+const { AddressableCustomModeStep } = require("./lib/AddressableCustomModeStep");
 
 module.exports = {
 	Control,
@@ -11,5 +12,7 @@ module.exports = {
 	Discovery,
 	CustomMode,
 	EffectTimingHelper,
-	AddressableMultiColorMode,
+	AddressableColorStopMode,
+	SingleSegmentsMode,
+	AddressableCustomModeStep,
 };

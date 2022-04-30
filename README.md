@@ -149,6 +149,86 @@ This interface allows the creation of effects which constantly update the contro
 The returned interface does not connect to the controller immediately.
 An example can be found in _examples/async_effect_test.js_.
 
+## ControlAddressable
+
+This class implements the new version 3 of the addressable protocol, in order to control controllers such as `AK001-ZJ2148` and the like.
+Because the interface it basically completely different, all of this functionality is not rolled into the `Control` class, but into this one instead.
+
+**constructor**(address, options)  
+Creates a new instance of the API. This does not connect to the light yet.  
+Accepted options:
+- `log_all_received` Log all received data to the console for debug purposes. (Default: false)
+- `connect_timeout` Duration in milliseconds after which a controller will be regarded as non-reachable, if a connection can not be established.
+Normally, this should be handled by your OS and you get an _EHOSTUNREACH_ error, but this allows you to set a custom timeout yourself. (Default: null _[No timeout/let the OS handle it]_)
+- `command_timeout` Duration in milliseconds after which the library will consider an acknowledged command as lost. Set to `null` to disable the timeout. (Default: 1000)
+
+**setPower**(on)  
+Turns the controller either on or off.
+
+**turnOn**()  
+Convenience method to call `setPower(true)`.
+
+**turnOff**()  
+Convenience method to call `setPower(false)`.
+
+**queryState**()  
+Gets the state of the controller. Example state:
+
+```javascript
+{
+	type: 0xA3, // can also be other values
+	on: true,
+	mode: "fixed", // "fixed", "rbm", "custom", "multi", "music"
+	effect: 1, // depending on the mode either the numeric or string identifier of the current effect
+	speed: 50, // playback speed of the current effect
+	color: {
+		red: 255,
+		green: 0,
+		blue: 255
+	},
+	warm_white: 0,
+}
+```
+
+**queryDeviceConfig**()  
+Gets the config of the controller, i.e. the configured number of LEDs, LED type, etc. Example config:
+
+```javascript
+{
+	pixel_count: 50,
+	segments: 3,
+	ic_type: 'SM16703',
+	led_order: 'GBR',
+	pixel_count_music: 50,
+	segments_music: 3
+}
+```
+
+**setFixedMode**(options)  
+Sets the "fixed mode" of the controller. This includes all the options of the "Fixed" tab of the app.
+Every field of the options object is optional, but if nothing is set, the controller will be set to all black, which is probably not an intended state.  
+Accepted options:
+
+- `effect`: A number between 1 and 10 indiciating the effect with 1 being a static color.
+- `speed`: A number between 1 and 100 controlling the speed of the effect.
+- `foreground`: An object of the form `{ red, green, blue }` controlling the "foreground" color of the effect.
+- `background`: An object of the form `{ red, green, blue }` controlling the "background" color of the effect (not available for all effects).
+- `reversed`: Play the effect in reverse (not available for all effects).
+
+**setColor**(red, green, blue)  
+Convenience method to set the controller to a fixed and static mode with a single color.
+
+**setRbmMode**(mode, brightness, speed)  
+I'm still not sure what "Rbm" is supposed to stand for, but it's what the app calls it and so it's what the library calls it.
+Essentially this function allows to select one of 100 preprogrammed effects (`mode` parameter) and play them with an adjustable brightness and at adjustable speed (both between 1 and 100).
+
+**setMultiColorMode**(mode)  
+This method takes an `AddressableMultiColorModeBase` object (see below) and makes the controller display it.
+This is used to control individual segments on the strip for example.
+
+**setCustomMode**(steps)  
+This method takes an array of `AddressableCustomModeStep` objects (see below) and makes the controller display them as a custom mode.
+
 ## EffectInterface
 **[Deprecated, use AsyncEffectInterface instead]**
 
@@ -194,6 +274,68 @@ All the color setting methods
 - **setWhites**
 
 function essentially the same as their counterparts on the `Control` class, with the key difference that they do not take a callback argument and that they should only be called (awaited) from within the `interval_function`.
+
+## AddressableMultiColorModeBase
+This is the base class for multiple different multi color effects that mimic the functionality of the Magic Home app.
+All of these methods return the class instance for easy chainability.
+
+**setEffect**(effect_name)  
+Set the effect of this mode to one of "static", "running_water", "strobe", "jump" or "breathing".
+
+**setSpeed**(speed)  
+Set the effect speed between 0 and 100.
+
+## AddressableColorStopMode
+This mode is comparable to the color stop multi color mode from the app.
+The whole strip is colored according to color stops which set the color of their own position as well as all subsequent ones until the next color stop is hit.
+If you wanted to set a strip with 50 segments to be red on the first 25 segments and blue on the remaining 25 segments you would create the mode like this:
+
+```javascript
+const mode = new AddressableColorStopMode(50)
+	.addColorStop(0, 255, 0, 0)
+	.addColorStop(25, 0, 0, 255);
+```
+
+All of these methods return the class instance for easy chainability.
+
+**constructor**(length)  
+Create a new `AddressableColorStopMode` instance for a strip with _length_ LEDs on it.
+
+**addColorStop**(start, red, green, blue)  
+Add a new color stop starting at position _start_.
+
+## SingleSegmentsMode
+This mode allows to control individual segments (or "points") on an LED strip.
+
+All of these methods return the class instance for easy chainability.
+
+**constructor**(length, backgroundColor)  
+Create a new `SingleSegmentsMode` instance for a strip with _length_ LEDs on it and with each segment set to _backgroundColor_ (default: `{ red: 0, green: 0, blue: 0}`).
+
+**setPointColor**(position, red, green, blue)  
+Set the color of a single segment on the LED strip.
+
+## AddressableCustomModeStep
+This class represents a single step in a custom mode, which is made up of up to 32 of these steps played in order.
+Each method returns the class instance so that they can be chained together.
+
+**setEffect**(effect)  
+Sets the effect index between 1 and 33.
+
+**setForegroundColor**(red, green, blue)  
+Sets the foreground color of this effect.
+
+**setBackgroundColor**(red, green, blue)  
+Sets the background color of this effect. The background color is not used on all of the effects.
+
+**setSegmentation**(segmentation)  
+Sets the "segmentation" setting, even though I'm not sure what this actually does.
+
+**setDirection**(left)  
+Control the direction of the effect, with `false` corresponding to right and `true` corresponding to left.
+
+**setSpeed**(speed)  
+Set the speed of the effect between 0 and 100.
 
 ## Discovery
 
