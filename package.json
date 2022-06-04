@@ -1,6 +1,6 @@
 {
   "name": "magic-home",
-  "version": "2.8.1",
+  "version": "2.9.0",
   "description": "An implementation of the \"Magic Home\" app functionality",
   "main": "index.js",
   "scripts": {
